@@ -1,3 +1,4 @@
 *.png binary
 *.jpeg binary
 *.jpg binary
+*.rgba binary
