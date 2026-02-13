@@ -1,6 +1,41 @@
+/*
+ * This file contains most of the implementation, except for the configuration in main.rs
+ * that is used with #[macroquad::main(conf)].
+ *
+ * Many parts of this code could be simplified or converted into constants. I may need to review
+ * and refactor it in the future.
+ */
+
 use macroquad::{prelude::*, ui::root_ui};
 use miniquad::conf::Icon;
 use std::collections::HashMap;
+
+const SINGLE_SQUARE_DIMENSION: f32 = 64.;
+
+pub fn draw_piece(
+    name: &str,
+    square: usize,
+    square_position: &[(f32, f32); 64],
+    piece_array: &Texture2D,
+    piece_index: &HashMap<&str, i32>,
+) {
+    draw_texture_ex(
+        piece_array,
+        square_position[square - 1].0,
+        square_position[square - 1].1,
+        WHITE,
+        DrawTextureParams {
+            dest_size: Some(Vec2::new(64., 64.)),
+            source: Some(Rect {
+                x: ((piece_index[name] - 1) % 6) as f32 * 64.,
+                y: ((piece_index[name] - 1) / 6) as f32 * 64.,
+                w: 64.,
+                h: 64.,
+            }),
+            ..Default::default()
+        },
+    );
+}
 
 pub fn other_things(board_white: &Texture2D) -> ((f32, f32), [(f32, f32); 64], Mode) {
     (
@@ -117,7 +152,10 @@ pub fn set_square_position(
     let mut current = 0;
     for j in 0..8 {
         for i in 0..8 {
-            square_position[current] = (offset_x + i as f32 * 32., offset_y + j as f32 * 32.);
+            square_position[current] = (
+                offset_x + i as f32 * SINGLE_SQUARE_DIMENSION,
+                offset_y + j as f32 * SINGLE_SQUARE_DIMENSION,
+            );
             current += 1;
         }
     }
