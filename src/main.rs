@@ -15,11 +15,11 @@ async fn main() {
         match mode {
             utils::Mode::Menu => mode = utils::ui(mode),
             utils::Mode::White => {
-                draw_texture(&board_black, board_pos.0, board_pos.1, WHITE);
+                draw_texture(&board_white, board_pos.0, board_pos.1, WHITE);
 
             },
             utils::Mode::Black => {
-                draw_texture(&board_white, board_pos.0, board_pos.1, WHITE);
+                draw_texture(&board_black, board_pos.0, board_pos.1, WHITE);
 
             },
         }
