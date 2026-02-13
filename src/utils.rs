@@ -2,6 +2,49 @@ use macroquad::{prelude::*, ui::root_ui};
 use miniquad::conf::Icon;
 use std::collections::HashMap;
 
+pub fn other_things(board_white: &Texture2D) -> ((f32, f32), [(f32, f32); 64], Mode) {
+    (
+        board_pos(board_white),
+        set_square_position(
+            &mut [(0., 0.); 64],
+            board_pos(board_white).0,
+            board_pos(board_white).1,
+        ),
+        Mode::Menu,
+    )
+}
+
+pub fn all_hashmaps(
+    _bitboards: HashMap<&'static str, u64>,
+    _piece_index: HashMap<&'static str, i32>,
+) -> (HashMap<&'static str, u64>, HashMap<&'static str, i32>) {
+    (set_bitboard(_bitboards), set_piece_index(_piece_index))
+}
+
+pub async fn chess_piece() -> Texture2D {
+    load_texture("chess_pieces_array.png").await.unwrap()
+}
+
+pub async fn white_board() -> Texture2D {
+    load_texture("chess_white_perspective_board.png")
+        .await
+        .unwrap()
+}
+
+pub async fn black_board() -> Texture2D {
+    load_texture("chess_black_perspective_board.png")
+        .await
+        .unwrap()
+}
+
+pub async fn all_textures() -> (Texture2D, Texture2D, Texture2D) {
+    (
+        chess_piece().await,
+        white_board().await,
+        black_board().await,
+    )
+}
+
 pub fn window_conf() -> Conf {
     Conf {
         window_title: "Chess".to_owned(),
@@ -11,8 +54,7 @@ pub fn window_conf() -> Conf {
     }
 }
 
-
-pub fn ui(mut mode: Mode) ->Mode{
+pub fn ui(mut mode: Mode) -> Mode {
     root_ui().label(label_pos(), "Choose which color you want to play as.");
     if root_ui().button(black_pos(), "Black") {
         mode = Mode::Black;
@@ -49,20 +91,8 @@ pub fn set_piece_index(mut _piece_index: HashMap<&str, i32>) -> HashMap<&str, i3
 pub fn board_pos(board_white: &Texture2D) -> (f32, f32) {
     (
         (window_conf().window_width / 2) as f32 - board_white.width() / 2.,
-     (window_conf().window_height / 2) as f32 - board_white.height() / 2.,
+        (window_conf().window_height / 2) as f32 - board_white.height() / 2.,
     )
-}
-
-pub async fn white_board() -> Texture2D {
-    load_texture("chess_white_perspective_board.png")
-    .await
-    .unwrap()
-}
-
-pub async fn black_board() -> Texture2D {
-    load_texture("chess_black_perspective_board.png")
-    .await
-    .unwrap()
 }
 
 pub fn black_pos() -> Option<Vec2> {
@@ -81,8 +111,8 @@ pub enum Mode {
 
 pub fn set_square_position(
     square_position: &mut [(f32, f32); 64],
-                       offset_x: f32,
-                       offset_y: f32,
+    offset_x: f32,
+    offset_y: f32,
 ) -> [(f32, f32); 64] {
     let mut current = 0;
     for j in 0..8 {
@@ -94,7 +124,7 @@ pub fn set_square_position(
     *square_position
 }
 
-pub fn set_icon() -> Icon {
+pub const fn set_icon() -> Icon {
     const LOGO16: &[u8; 1024] = include_bytes!("logo16.rgba");
     const LOGO32: &[u8; 4096] = include_bytes!("logo32.rgba");
     const LOGO64: &[u8; 16384] = include_bytes!("logo64.rgba");
@@ -104,7 +134,6 @@ pub fn set_icon() -> Icon {
         big: *LOGO64,
     }
 }
-
 
 pub fn set_bitboard(mut _bitboards: HashMap<&str, u64>) -> HashMap<&str, u64> {
     _bitboards.insert(
