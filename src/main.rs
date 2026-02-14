@@ -34,7 +34,10 @@ async fn main() {
                     square_position.reverse();
                     reverse_for_white = false;
                 }
-                utils::draw_piece("BRook", 23, &square_position, &piece_array, &piece_index); // The square position logic is a bit funky but please bear with it.
+                for (key, _value) in &_bitboards {
+                    utils::draw_piece(key, 23, &square_position, &piece_array, &piece_index);
+                }
+
             }
             utils::Mode::Black => {
                 draw_texture(&board_black, board_pos.0, board_pos.1, WHITE);
